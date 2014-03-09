@@ -1,8 +1,11 @@
 #include <EEPROM.h>
 #include <PID_v1.h>
 
+// Debug modda çalıştırmak için etiketi uncomment et
+// #define DEBUG
+
 //--------------------------------------------------------------------------------
-//              DEĞİŞKENLER BÖLÜMÜ - TÜM DEĞİŞKENLER BURADA TANIMLANACAK
+//              DEĞİŞKENLER BÖLÜMÜ - TÜM GLOBAL DEĞİŞKENLER BURADA TANIMLANACAK
 //--------------------------------------------------------------------------------
 
 // pid katsayıları
@@ -12,7 +15,13 @@ const double kd=0.0;        // türev kaysayısı
 
 // sensör değişkenleri
 boolean on,arka;    // ön ve arkada bulunan dijital sensörler (ön---pina2)(arka---pina4)
-int sag,sol;        // sağ ve soldaki analog uzaklık sensörleri (sag---pin1)(sol---pin0)
+int sag,sol;        // sağ ve soldaki analog uzaklık sensörleri (sag---pina1)(sol---pina0)
+
+// sensor pinleri
+const int sensorSag = A1;
+const int sensorSol = A0;
+const int sensorOn = A2;
+const int sensorArka = A3;
 
 // motor pinleri
 const int motSagOn = 5;
@@ -23,11 +32,12 @@ const int enableSag = 13;
 const int enableSol = 7;
 
 // motor değişkenleri
-int motSag = 0;
+int motSag = 0;        // motora uygulanacak toplam pwm girişi
 int motSol = 0;
-int offsetSag = 0;
+int offsetSag = 0;    // Motorlara dönmeye başlamaları için sürekli verilen giriş
 int offsetSol = 0;
-
+const int donum1 = 100;    // Dönerken hızlı dönen tekere verilecek giriş
+const int donum2 = 50;     // Dönerken yavaş dönen tekere verilecek giriş
 
 // pid değişkenleri
 double error=0,referance=0,output=0;
@@ -74,77 +84,16 @@ void setup()
 
 void loop()
 {
+  tumSensorleriOku();
+  hataHesapla();           // hata hesaplanıyor
   pid1.Compute();          // pid kontrolcüsünü çalıştırıyor
+  yolunuBul();             // labirent çözme algoritması ekleniyor 
 }
 
-//--------------------------------------------------------------------------------
-//              FONKSİYONLAR BÖLÜMÜ - TÜM FONKSİYONLAR BU BÖLÜMDE TANIMLANACAK
-//--------------------------------------------------------------------------------
 
 
-// hata hesabı
-int hata_hesapla(){          // hata negatifse sağa daha yakın
-  return sag - sol;          // hata pozitifse sola daha yakın
-}
-
-// Analog sharp sensörü okuma fonksiyonu
-int sharpOku(int pin){                 // Analog sharp sensörler okunur   
-  return 2400 / (analogRead(pin) - 20);      // fonksiyon cm cinsinden değer dönderir
-}
-
-// Digital sharp sensörü okuma fonksiyonu
-boolean sharpDigitalOku(int pin){      // digital sharp sensörler okunur
-  return digitalRead(pin);
-}
-
-// Kontrast sensörü okuma fonksiyonu
 
 
-// Konumu hesaplamak için kullanılan interrupt fonksiyonu 
-void konumBul(){
-  if(digitalRead(motSagOn) == 1 && digitalRead(motSolOn) == 1) // motorlar ileri yönde dönüyor ise konum arttırılıyor
-  {
-    konum += 2.74;
-  }
-  else if(digitalRead(motSagOn) == 0 && digitalRead(motSolOn) == 0) // motorlar geriye dönüyor ise konum azaltılıyor
-  {
-    konum -= 2.74;   
-  }
-}
 
-// ileri gitme fonksiyonu
-void ileriGit(){
-  
-  digitalWrite(motSagOn,HIGH);     // ileri gitmek için gerekli pin atamaları
-  digitalWrite(motSolOn,HIGH);
-  digitalWrite(motSagArka,LOW);
-  digitalWrite(motSolArka,LOW);
-  
-  motSag = constrain((offsetSag + output), 0, 255);    // motor hızları atanıyor
-  motSol = constrain((offsetSol - output), 0, 255);
-  
-  sayac += 1;
-}
 
-// geri gitme fonksiyonu
-void geriGit(){
-  
-  digitalWrite(motSagArka,HIGH);      // geri gitmek için gerekli pin atamaları
-  digitalWrite(motSolArka,HIGH);
-  digitalWrite(motSagOn,LOW);
-  digitalWrite(motSolOn,LOW);
-  
-  motSag = constrain((offsetSag + output), 0, 255);    // motor hızları atanıyor
-  motSol = constrain((offsetSol - output), 0, 255);
-}
-
-void dur(){
-  digitalWrite(motSagArka,LOW);      // durmak için gerekli pin atamaları
-  digitalWrite(motSolArka,LOW);
-  digitalWrite(motSagOn,LOW);
-  digitalWrite(motSolOn,LOW);
-  
-  EEPROM.write(sayac,konum);        // konum verileri eeprom'a yazılıyor 
-  konum = 0;                         // bir dahaki hareket için konum sıfırlanıyor
-}
 
