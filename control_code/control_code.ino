@@ -2,16 +2,16 @@
 #include <PID_v1.h>
 
 // Debug modda çalıştırmak için etiketi uncomment et
-// #define DEBUG
+ #define DEBUG
 
 //--------------------------------------------------------------------------------
 //              DEĞİŞKENLER BÖLÜMÜ - TÜM GLOBAL DEĞİŞKENLER BURADA TANIMLANACAK
 //--------------------------------------------------------------------------------
 
 // pid katsayıları
-const double kp=0.0;        // oransal katsayısı
-const double ki=0.0;        // integral katsayısı
-const double kd=0.0;        // türev kaysayısı
+const double kp = 2.0;        // oransal katsayısı
+const double ki = 0.0;        // integral katsayısı
+const double kd = 0.0;        // türev kaysayısı
 
 // sensör değişkenleri
 boolean on,arka;    // ön ve arkada bulunan dijital sensörler (ön---pina2)(arka---pina4)
@@ -24,18 +24,18 @@ const int sensorOn = A2;
 const int sensorArka = A3;
 
 // motor pinleri
-const int motSagOn = 5;
-const int motSolOn = 11;
-const int motSolArka = 10;
-const int motSagArka = 6;
-const int enableSag = 13;
+const int motSolOn = 6;
+const int motSolArka = 5;
+const int motSagOn = 10;
+const int motSagArka = 11;
+const int enableSag = 12;
 const int enableSol = 7;
 
 // motor değişkenleri
 int motSag = 0;        // motora uygulanacak toplam pwm girişi
 int motSol = 0;
-int offsetSag = 0;    // Motorlara dönmeye başlamaları için sürekli verilen giriş
-int offsetSol = 0;
+const int offsetSag = 60;    // Motorlara dönmeye başlamaları için sürekli verilen giriş
+const int offsetSol = 72;
 const int donum1 = 100;    // Dönerken hızlı dönen tekere verilecek giriş
 const int donum2 = 50;     // Dönerken yavaş dönen tekere verilecek giriş
 
@@ -66,15 +66,15 @@ void setup()
   
   // pid ayarları
   pid1.SetMode(AUTOMATIC);
-  pid1.SetOutputLimits(-255, 255);
+  pid1.SetOutputLimits(0,255);
   
   // encoder pinlerindeki interrupt ayarları
   attachInterrupt(0,konumBul,CHANGE);
   attachInterrupt(1,konumBul,CHANGE);
   
   // motor enable ayarları
-  digitalWrite(enableSag,0);
-  digitalWrite(enableSol,0);
+  digitalWrite(enableSol,HIGH);
+  digitalWrite(enableSag,HIGH);
 }
 
 //--------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ void loop()
   tumSensorleriOku();
   hataHesapla();           // hata hesaplanıyor
   pid1.Compute();          // pid kontrolcüsünü çalıştırıyor
-  yolunuBul();             // labirent çözme algoritması ekleniyor 
+  yolunuBul();             // labirent çözme algoritması ekleniyor   
 }
 
 

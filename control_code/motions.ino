@@ -12,28 +12,27 @@ hareketi yapacaktır
 // ileri gitme fonksiyonu
 void ileriGit(){
   
-  digitalWrite(motSagOn,HIGH);     // ileri gitmek için gerekli pin atamaları
-  digitalWrite(motSolOn,HIGH);
-  digitalWrite(motSagArka,LOW);
-  digitalWrite(motSolArka,LOW);
-  
   motSag = constrain((offsetSag + output), 0, 255);    // motor hızları atanıyor
   motSol = constrain((offsetSol - output), 0, 255);
   
+  analogWrite(motSagOn,motSag);     // ileri gitmek için gerekli pin atamaları
+  analogWrite(motSolOn,motSol);
+  digitalWrite(motSagArka,LOW);
+  digitalWrite(motSolArka,LOW);
+    
 }
-
-
 
 // geri gitme fonksiyonu
 void geriGit(){
   
-  digitalWrite(motSagArka,HIGH);      // geri gitmek için gerekli pin atamaları
-  digitalWrite(motSolArka,HIGH);
-  digitalWrite(motSagOn,LOW);
-  digitalWrite(motSolOn,LOW);
-  
   motSag = constrain((offsetSag + output), 0, 255);    // motor hızları atanıyor
   motSol = constrain((offsetSol - output), 0, 255);
+  
+  digitalWrite(motSagArka,motSag);      // geri gitmek için gerekli pin atamaları
+  digitalWrite(motSolArka,motSol);
+  digitalWrite(motSagOn,LOW);
+  digitalWrite(motSolOn,LOW);
+    
 }
 
 // durma fonksiyonu
@@ -51,17 +50,19 @@ void dur(){
 // dönme fonksiyonu
 void don(boolean yon){
   
-  digitalWrite(motSagOn,HIGH);     // ileri gitmek için gerekli pin atamaları
-  digitalWrite(motSolOn,HIGH);
-  digitalWrite(motSagArka,LOW);
+  digitalWrite(motSagArka,LOW);  // motor geri pinleri LOW
   digitalWrite(motSolArka,LOW);
   
   if(yon == 0){    // sağa dönüş yapılacaksa
     motSag = offsetSag + donum2;
     motSol = offsetSol + donum1;
+    analogWrite(motSagOn,motSag);    
+    analogWrite(motSolOn,motSol);
     
   }else{    // sola dönüş yapacaksa
     motSag = offsetSag + donum1;
     motSol = offsetSol + donum2;
+    analogWrite(motSagOn,motSag);    
+    analogWrite(motSolOn,motSol);
   }  
 }

@@ -39,6 +39,9 @@ void yolunuBul(){
   Serial.print("arka    :");
   Serial.print(arka);
   Serial.print("     ");
+  Serial.print("hata  :");
+  Serial.print(sag-sol);
+  Serial.print("     ");
   Serial.print("Konum    :");
   Serial.println(konum);
   delay(100);
