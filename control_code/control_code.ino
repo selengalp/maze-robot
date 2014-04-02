@@ -2,16 +2,16 @@
 #include <PID_v1.h>
 
 // Debug modda çalıştırmak için etiketi uncomment et
- #define DEBUG
+//#define DEBUG
 
 //--------------------------------------------------------------------------------
 //              DEĞİŞKENLER BÖLÜMÜ - TÜM GLOBAL DEĞİŞKENLER BURADA TANIMLANACAK
 //--------------------------------------------------------------------------------
 
 // pid katsayıları
-const double kp = 2.0;        // oransal katsayısı
+const double kp = 4.0;        // oransal katsayısı
 const double ki = 0.0;        // integral katsayısı
-const double kd = 0.0;        // türev kaysayısı
+const double kd = 6.0;        // türev kaysayısı
 
 // sensör değişkenleri
 boolean on,arka;    // ön ve arkada bulunan dijital sensörler (ön---pina2)(arka---pina4)
@@ -34,8 +34,8 @@ const int enableSol = 7;
 // motor değişkenleri
 int motSag = 0;        // motora uygulanacak toplam pwm girişi
 int motSol = 0;
-const int offsetSag = 60;    // Motorlara dönmeye başlamaları için sürekli verilen giriş
-const int offsetSol = 72;
+const int offsetSag = 100;    // Motorlara dönmeye başlamaları için sürekli verilen giriş
+const int offsetSol = 115;
 const int donum1 = 100;    // Dönerken hızlı dönen tekere verilecek giriş
 const int donum2 = 50;     // Dönerken yavaş dönen tekere verilecek giriş
 
@@ -66,7 +66,7 @@ void setup()
   
   // pid ayarları
   pid1.SetMode(AUTOMATIC);
-  pid1.SetOutputLimits(0,255);
+  pid1.SetOutputLimits(-255,255);
   
   // encoder pinlerindeki interrupt ayarları
   attachInterrupt(0,konumBul,CHANGE);
@@ -88,6 +88,10 @@ void loop()
   hataHesapla();           // hata hesaplanıyor
   pid1.Compute();          // pid kontrolcüsünü çalıştırıyor
   yolunuBul();             // labirent çözme algoritması ekleniyor   
+  
+  #ifdef DEBUG
+  debugFunction();
+  #endif  
 }
 
 

@@ -37,3 +37,33 @@ void tumSensorleriOku(){
   on = sharpDigitalOku(sensorOn);
   arka = sharpDigitalOku(sensorArka);
 }
+
+// debug kodları bu fonksiyonda
+void debugFunction(){
+  Serial.print("sol  :");
+  Serial.print(sol);
+  Serial.print("     ");
+  Serial.print("sag  :");
+  Serial.print(sag);
+  Serial.print("     ");
+  Serial.print("on  :");
+  Serial.print(on);
+  Serial.print("     ");
+  Serial.print("arka  :");
+  Serial.print(arka);
+  Serial.print("     ");
+  Serial.print("hata  :");
+  Serial.print(sag-sol);
+  Serial.print("     ");
+  Serial.print("output  :");
+  Serial.print(output);
+  Serial.print("     ");
+  Serial.print("motorSag  :");
+  Serial.print(motSag);
+  Serial.print("     ");
+  Serial.print("motorSol  :");
+  Serial.print(motSol);
+//  Serial.print("Konum    :");
+//  Serial.print(konum);
+  Serial.println();
+}

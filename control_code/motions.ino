@@ -54,6 +54,7 @@ void don(boolean yon){
   digitalWrite(motSolArka,LOW);
   
   if(yon == 0){    // sağa dönüş yapılacaksa
+  
     motSag = offsetSag + donum2;
     motSol = offsetSol + donum1;
     analogWrite(motSagOn,motSag);    

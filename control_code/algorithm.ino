@@ -17,33 +17,17 @@ void yolunuBul(){
   }else if(sag<20 && sol>20){    // sağ duvar sol boşluksa sola dön
     
     dur();
+    delay(50);
     don(1);
     
   }else if(sag>20 && sol<20){    // sol duvar sağ boşluksa sağa dön
     
     dur();
+    delay(50);
     don(0);
     
-  }else{ }       // hiç bir şart sağlanmadıysa bir şey yapma
+  }else{  // hiç bir şart sağlanmadıysa geri git
+   geriGit(); 
+  }       
 
-  #ifdef DEBUG
-  Serial.print("sol    :");
-  Serial.print(sol);
-  Serial.print("     ");
-  Serial.print("sag    :");
-  Serial.print(sag);
-  Serial.print("     ");
-  Serial.print("on    :");
-  Serial.print(on);
-  Serial.print("     ");
-  Serial.print("arka    :");
-  Serial.print(arka);
-  Serial.print("     ");
-  Serial.print("hata  :");
-  Serial.print(sag-sol);
-  Serial.print("     ");
-  Serial.print("Konum    :");
-  Serial.println(konum);
-  delay(100);
-  #endif  
 }
